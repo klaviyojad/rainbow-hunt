@@ -1,14 +1,11 @@
 import firebase from 'firebase'
+import "firebase/auth";
+import "firebase/firestore";
 
 var firebaseConfig = {
-    apiKey: "AIzaSyDyYrvIVWD68HvzFmKE0TYYJSpAV2zSzv4",
-    authDomain: "rainbowhunt-b14d6.firebaseapp.com",
-    databaseURL: "https://rainbowhunt-b14d6.firebaseio.com",
-    projectId: "rainbowhunt-b14d6",
-    storageBucket: "rainbowhunt-b14d6.appspot.com",
-    messagingSenderId: "922619653234",
-    appId: "1:922619653234:web:3c465d714eeb196559e6eb",
-    measurementId: "G-RPNDT8J0DM"
+    apiKey: process.env.REACT_APP_API_KEY,
+    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+    databaseURL: process.env.REACT_APP_DATABASE_URL
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);

@@ -8,8 +8,9 @@ import rainbowData from "./data/rainbows.json"
 
 const rainbowDbRef = firebase.database().ref('rainbows')
 
-/* console.log(rainbowData)
+console.log(rainbowData)
 
+/*
 rainbowData.data.map(rainbow => {
   rainbowDbRef.push(rainbow)
 
