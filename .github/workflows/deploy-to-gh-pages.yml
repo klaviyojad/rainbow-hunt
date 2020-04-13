@@ -18,6 +18,8 @@ jobs:
         REACT_APP_APIKey: ${{ secrets.REACT_APP_APIKey }}
         REACT_APP_AUTH_DOMAIN: ${{ secrets.REACT_APP_AUTH_DOMAIN }}
         REACT_APP_DATABASE_URL: ${{ secrets.REACT_APP_DATABASE_URL }}
+        REACT_APP_DATABASE_URL: ${{ secrets.REACT_APP_DATABASE_URL }}
+        REACT_APP_MAPBOX_TOKEN: ${{ secrets.REACT_APP_MAPBOX_TOKEN }}
 
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@releases/v3
