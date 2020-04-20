@@ -16,6 +16,14 @@ export const ALL_OPTIONS = [OPTION_RAINBOWS, OPTION_PLANTS, OPTION_SKY, OPTION_S
 
 export const ALL_WEEKS = [WEEK_PLANTS, WEEK_RAINBOWS, WEEK_SKIES, WEEK_SPRING, WEEK_OCEAN]
 
+export const TYPE_OF_ART_WINDOW = "window art"
+export const TYPE_OF_ART_SIDEWALK = "sidewalk art"
+export const TYPE_OF_ART_OUTSIDE = "outside art"
+export const TYPE_OF_ART_OTHER = "other"
+
+
+
+
 export const RECORDS = [
     {
         week: WEEK_PLANTS,

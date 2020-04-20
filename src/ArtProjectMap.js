@@ -5,30 +5,41 @@ import './ArtProjectMap.css'
 import { ArtEntryModal } from './components'
 import * as Constants from './constants'
 import Moment from 'moment';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import Confirm from "./Confirm"
 
 
 const artProjectDbRef = firebase.database().ref('/')
 
 class ArtProjectMap extends Component {
 
+    constructor(props) {
 
-    state = {
-        isLoadedData: false,
-        artEntries: [],
-        viewport: {
-            latitude: 42.3876,
-            longitude: -71.0995,
-            zoom: 12,
-            width: '100vw',
-            height: "100vh"
-        },
-        selectedArtEntry: null,
-        active: Constants.ALL_OPTIONS,
-        isModalOpen: false,
-        modalLng: null,
-        modalLat: null
+        super(props)
+
+        this.state = {
+            isLoadedData: false,
+            artEntries: [],
+            viewport: {
+                latitude: 42.3876,
+                longitude: -71.0995,
+                zoom: 12,
+                width: '100vw',
+                height: "100vh"
+            },
+            selectedArtEntry: null,
+            active: Constants.ALL_OPTIONS,
+            isModalOpen: false,
+            modalLng: null,
+            modalLat: null
+
+        }
 
     }
+
+
+
+
 
     updateStateWithNewArtEntry(artEntry) {
 
@@ -40,16 +51,25 @@ class ArtProjectMap extends Component {
 
     addNewArtEntry = (week, typeOfArt) => {
         const itemRef = firebase.database().ref('/');
-        const artEntry = {
-            "Timestamp": Moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-            "Type of Art": typeOfArt,
-            "Week": week,
-            "lat": this.state.modalLat,
-            "lng": this.state.modalLng
-        };
-        itemRef.push(artEntry);
 
-        this.updateStateWithNewArtEntry(artEntry)
+        fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.modalLng},${this.state.modalLat}.json?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`)
+            .then(response => response.json())
+            .then(result => {
+
+
+
+                const artEntry = {
+                    "Address": result.features[0].place_name,
+                    "Timestamp": Moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                    "Type of Art": typeOfArt,
+                    "Week": week,
+                    "lat": this.state.modalLat,
+                    "lng": this.state.modalLng
+                };
+                itemRef.push(artEntry);
+
+                this.updateStateWithNewArtEntry(artEntry)
+            })
     }
 
 
@@ -118,18 +138,15 @@ class ArtProjectMap extends Component {
         })
     }
 
-    /*     onSelected = (viewport, item) => {
-            this.setState({ viewport });
-            console.log('Selected: ', item)
-        }
-     */
-
-
     setIsModalOpen = (isModalOpen) => {
         this.setState({ isModalOpen })
     }
 
+    handleDelete = () => {
+        console.log("deleting item")
 
+        this.setState({ selectedArtEntry: null })
+    }
 
     render() {
 
@@ -189,34 +206,41 @@ class ArtProjectMap extends Component {
 
                                         )
                                     }
-                                    {/*  {artEntry.Week === Constants.WEEK_RAINBOWS && active.includes(Constants.OPTION_RAINBOWS) &&
-                                        (<img src={rainbow} alt="Rainbow Icon" />)}
-                                    {artEntry.Week === Constants.WEEK_PLANTS && active.includes(Constants.OPTION_PLANTS) &&
-                                        (<img src={plant} alt="Plant Icon" />)}
-                                    {artEntry.Week === Constants.WEEK_SKIES && active.includes(Constants.OPTION_SKY) &&
-                                        (<img src={sky} alt="Sky Icon" />)} */}
                                 </button>
                             </Marker>)
 
                     ))}
+
                     {
 
 
 
                         selectedArtEntry ?
                             (<Popup latitude={selectedArtEntry.lat} longitude={selectedArtEntry.lng}
-                                onClose={() => this.setState({ selectedArtEntry: null })}>
-                                <h2>{selectedArtEntry.Week}</h2>
+                                onClose={() => this.setState({ selectedArtEntry: null })}
+                                closeOnClick={false}
+                                captureClick={true}>
+
+                                <u>{selectedArtEntry.Week}</u>
+                                <p>{selectedArtEntry['Address']}</p>
                                 <p>{selectedArtEntry['Type of Art']}</p>
                                 <p>{selectedArtEntry['Timestamp']}</p>
+
+                                <Confirm title="Confirm" description="Are you sure?">
+                                    {confirm => (
+                                        <button className="marker-modal-btn" onClick={confirm(this.handleDelete)} >Delete Entry</button>
+                                    )}
+                                </Confirm>
+
                             </Popup>) : null
                     }
 
 
 
-
                 </ReactMapGL>
                 <ArtEntryModal isModalOpen={isModalOpen} setIsModalOpen={this.setIsModalOpen} addNewArtEntry={this.addNewArtEntry} />
+
+
 
             </div>
         )
