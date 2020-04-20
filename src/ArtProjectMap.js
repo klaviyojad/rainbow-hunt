@@ -1,24 +1,13 @@
 import React, { Component } from 'react';
 import firebase from './firebase'
 import ReactMapGL, { Marker, Popup } from 'react-map-gl'
-import { Modal } from './Modal';
 import './ArtProjectMap.css'
-import { rainbow, plant, sky } from './icons'
+import { ArtEntryModal } from './components'
+import * as Constants from './constants'
+import Moment from 'moment';
 
 
 const artProjectDbRef = firebase.database().ref('/')
-
-
-const toggleFreezeScroll = () => {
-    const body = document.querySelector('body');
-    if (body.style.overflow === '' || body.style.overflow === 'auto') {
-        body.style.overflow = 'hidden';
-    } else {
-        setTimeout(() => {
-            body.style.overflow = 'auto';
-        }, 500);
-    }
-};
 
 class ArtProjectMap extends Component {
 
@@ -34,8 +23,11 @@ class ArtProjectMap extends Component {
             height: "100vh"
         },
         selectedArtEntry: null,
-        active: ["rainbows", "plants", "sky"],
-        isModalOpen: false
+        active: Constants.ALL_OPTIONS,
+        isModalOpen: false,
+        modalLng: null,
+        modalLat: null
+
     }
 
     updateStateWithNewArtEntry(artEntry) {
@@ -46,6 +38,19 @@ class ArtProjectMap extends Component {
         })
     }
 
+    addNewArtEntry = (week, typeOfArt) => {
+        const itemRef = firebase.database().ref('/');
+        const artEntry = {
+            "Timestamp": Moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+            "Type of Art": typeOfArt,
+            "Week": week,
+            "lat": this.state.modalLat,
+            "lng": this.state.modalLng
+        };
+        itemRef.push(artEntry);
+
+        this.updateStateWithNewArtEntry(artEntry)
+    }
 
 
 
@@ -64,8 +69,12 @@ class ArtProjectMap extends Component {
                         this.updateStateWithNewArtEntry(artEntry)
 
                         count = count + 1
-                        if (count === total)
+                        if (count === total) {
+
+
                             this.setState({ isLoadedData: true })
+
+                        }
                     }
                     else {
                         fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${artEntry['Address']}&key=${process.env.REACT_APP_GOOGLE_KEY}`)
@@ -84,16 +93,16 @@ class ArtProjectMap extends Component {
                                 this.updateStateWithNewArtEntry(itemRef)
 
                                 count = count + 1
-                                if (count === total)
+                                if (count === total) {
                                     this.setState({ isLoadedData: true })
+
+                                }
 
                             })
 
                     }
 
-
-
-
+                    return true
                 })
 
 
@@ -115,17 +124,26 @@ class ArtProjectMap extends Component {
         }
      */
 
+
+    setIsModalOpen = (isModalOpen) => {
+        this.setState({ isModalOpen })
+    }
+
+
+
     render() {
-        const { selectedArtEntry, active } = this.state;
-        const setIsModalOpen = (isModalOpen) => {
-            this.setState({ isModalOpen })
-        }
-        const options = [["rainbows"], ["plants"], ["sky"], ["rainbows", "plants", "sky"]]
+
+        const { selectedArtEntry, active, isModalOpen } = this.state;
+
+        const options = [
+            ...Constants.ALL_OPTIONS,
+            Constants.ALL_OPTIONS,
+        ]
         const renderOptions = (option, i) => {
             return (
                 <label key={i} className="toggle-container">
-                    <input onChange={() => { this.setState({ active: option }) }} checked={JSON.stringify(active) == JSON.stringify(option)} name="toggle" type="radio" />
-                    <div className="toggle txt-s py3 toggle--active-white">{(option.length === 1) ? option[0] : 'all'}</div>
+                    <input onChange={() => { this.setState({ active: option }) }} checked={JSON.stringify(active) === JSON.stringify(option)} name="toggle" type="radio" />
+                    <div className="toggle txt-s py3 toggle--active-white">{(Array.isArray(option)) ? 'all' : option}</div>
                 </label>
             );
         }
@@ -143,29 +161,42 @@ class ArtProjectMap extends Component {
                     {...viewport}
                     mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
                     onViewportChange={this.handleViewportChange}
-
+                    mapStyle={"mapbox://styles/jaddsky/ck97hlbf3077h1iqaeu26gyh8"}
                     onClick={(e) => {
-
-                        setIsModalOpen(true)
+                        this.setState({
+                            "modalLat": e.lngLat[1],
+                            "modalLng": e.lngLat[0],
+                            "isModalOpen": true
+                        })
                     }
                     }>
                     {this.state.artEntries.map(artEntry => (
-                        <Marker key={`${JSON.stringify(artEntry)}`} latitude={artEntry.lat} longitude={artEntry.lng}>
-                            <button className="marker-btn" onClick={(e) => {
-                                e.preventDefault();
-                                this.setState({
-                                    selectedArtEntry: artEntry
-                                })
-                            }}>
+                        artEntry.lat && artEntry.lng && (
+                            <Marker key={`${JSON.stringify(artEntry)}`} latitude={artEntry.lat} longitude={artEntry.lng}>
+                                <button className="marker-btn" onClick={(e) => {
+                                    e.preventDefault();
+                                    this.setState({
+                                        selectedArtEntry: artEntry
+                                    })
+                                }}>
 
-                                {artEntry.Week === "week 2 - rainbows" && active.includes('rainbows') &&
-                                    (<img src={rainbow} alt="Rainbow Icon" />)}
-                                {artEntry.Week === "week 1 - plants" && active.includes('plants') &&
-                                    (<img src={plant} alt="Plant Icon" />)}
-                                {artEntry.Week === "week 3 - skies" && active.includes('sky') &&
-                                    (<img src={sky} alt="Sky Icon" />)}
-                            </button>
-                        </Marker>
+                                    {
+                                        Constants.RECORDS.map(record => {
+                                            if (artEntry.Week === record.week && active.includes(record.option))
+                                                return (<img key={`${JSON.stringify(artEntry)}${JSON.stringify(record)}`} src={record.image} alt={record.alt} />)
+                                            return null;
+                                        }
+
+                                        )
+                                    }
+                                    {/*  {artEntry.Week === Constants.WEEK_RAINBOWS && active.includes(Constants.OPTION_RAINBOWS) &&
+                                        (<img src={rainbow} alt="Rainbow Icon" />)}
+                                    {artEntry.Week === Constants.WEEK_PLANTS && active.includes(Constants.OPTION_PLANTS) &&
+                                        (<img src={plant} alt="Plant Icon" />)}
+                                    {artEntry.Week === Constants.WEEK_SKIES && active.includes(Constants.OPTION_SKY) &&
+                                        (<img src={sky} alt="Sky Icon" />)} */}
+                                </button>
+                            </Marker>)
 
                     ))}
                     {
@@ -184,46 +215,8 @@ class ArtProjectMap extends Component {
 
 
 
-
-
-
-
-                    <Modal
-                        setIsModalOpen={setIsModalOpen}
-                        isModalOpen={this.state.isModalOpen}
-                        toggleScroll={toggleFreezeScroll}
-                    >
-                        <div>
-                            <h3>Would you like to proceed?</h3>
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between'
-                                }}
-                            >
-                                <button
-                                    className="cancel"
-                                    onClick={() => {
-                                        setIsModalOpen(false);
-                                        toggleFreezeScroll();
-                                    }}
-                                >
-                                    Cancel
-            </button>
-                                <button
-                                    onClick={() => {
-                                        setIsModalOpen(false);
-                                        toggleFreezeScroll();
-                                    }}
-                                >
-                                    Yes, proceed.
-            </button>
-                            </div>
-                        </div>
-                    </Modal>
-
                 </ReactMapGL>
-
+                <ArtEntryModal isModalOpen={isModalOpen} setIsModalOpen={this.setIsModalOpen} addNewArtEntry={this.addNewArtEntry} />
 
             </div>
         )
