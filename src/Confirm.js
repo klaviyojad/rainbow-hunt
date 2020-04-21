@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Dialog } from "@reach/dialog"
+import './ArtProjectMap.css'
 
 export default class ConfirmStatusChange extends React.Component {
     state = {
@@ -38,8 +39,8 @@ export default class ConfirmStatusChange extends React.Component {
                         <h1>{this.props.title}</h1>
                         <p>{this.props.description}</p>
 
-                        <button onClick={this.hide}>Cancel</button>
-                        <button onClick={this.confirm}>OK</button>
+                        <button className="marker-modal-btn" onClick={this.hide}>Cancel</button>&nbsp;
+                        <button className="marker-modal-btn" onClick={this.confirm}>OK</button>
                     </Dialog>
                 )}
             </React.Fragment>

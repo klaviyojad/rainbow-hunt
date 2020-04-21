@@ -51,14 +51,14 @@ class ArtProjectMap extends Component {
 
     addNewArtEntry = (week, typeOfArt) => {
         const itemRef = firebase.database().ref('/');
+        const id = itemRef.push().key;
 
         fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.modalLng},${this.state.modalLat}.json?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`)
             .then(response => response.json())
             .then(result => {
 
-
-
                 const artEntry = {
+                    "id": id,
                     "Address": result.features[0].place_name,
                     "Timestamp": Moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
                     "Type of Art": typeOfArt,
@@ -66,7 +66,9 @@ class ArtProjectMap extends Component {
                     "lat": this.state.modalLat,
                     "lng": this.state.modalLng
                 };
-                itemRef.push(artEntry);
+                //itemRef.push(artEntry);
+                //itemRef.push(artEntry);
+                firebase.database().ref(`/${id}`).update(artEntry)
 
                 this.updateStateWithNewArtEntry(artEntry)
             })
@@ -86,6 +88,7 @@ class ArtProjectMap extends Component {
                 Object.entries(artEntries).map(([key, artEntry]) => {
                     if (artEntry['lat'] && artEntry['lng']) {
 
+                        artEntry['id'] = key
                         this.updateStateWithNewArtEntry(artEntry)
 
                         count = count + 1
@@ -145,7 +148,15 @@ class ArtProjectMap extends Component {
     handleDelete = () => {
         console.log("deleting item")
 
-        this.setState({ selectedArtEntry: null })
+        const itemRef = firebase.database().ref(`/${this.state.selectedArtEntry.id}`);
+        itemRef.remove();
+
+        const newArtEntries = this.state.artEntries.filter(artEntry => artEntry.id !== this.state.selectedArtEntry.id);
+
+        this.setState({
+            artEntries: newArtEntries,
+            selectedArtEntry: null
+        })
     }
 
     render() {
