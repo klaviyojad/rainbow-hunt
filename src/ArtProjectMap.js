@@ -9,7 +9,10 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import Confirm from "./Confirm"
 
 
-const artProjectDbRef = firebase.database().ref('/')
+
+
+
+
 
 class ArtProjectMap extends Component {
 
@@ -50,6 +53,9 @@ class ArtProjectMap extends Component {
     }
 
     addNewArtEntry = (week, typeOfArt) => {
+
+
+
         const itemRef = firebase.database().ref('/');
         const id = itemRef.push().key;
 
@@ -80,60 +86,64 @@ class ArtProjectMap extends Component {
         //ping our api endpoint
         //update our state
 
-        artProjectDbRef.on('value', snapshot => {
-            let artEntries = snapshot.val()
-            const total = snapshot.numChildren()
-            let count = 0;
-            if (artEntries) {
-                Object.entries(artEntries).map(([key, artEntry]) => {
-                    if (artEntry['lat'] && artEntry['lng']) {
+        firebase.auth().signInAnonymously().then(() => {
 
-                        artEntry['id'] = key
-                        this.updateStateWithNewArtEntry(artEntry)
+            firebase.database().ref('/').on('value', snapshot => {
+                let artEntries = snapshot.val()
+                const total = snapshot.numChildren()
+                let count = 0;
+                if (artEntries) {
+                    Object.entries(artEntries).map(([key, artEntry]) => {
+                        if (artEntry['lat'] && artEntry['lng']) {
 
-                        count = count + 1
-                        if (count === total) {
+                            artEntry['id'] = key
+                            this.updateStateWithNewArtEntry(artEntry)
+
+                            count = count + 1
+                            if (count === total) {
 
 
-                            this.setState({ isLoadedData: true })
+                                this.setState({ isLoadedData: true })
 
+                            }
                         }
-                    }
-                    else {
-                        fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${artEntry['Address']}&key=${process.env.REACT_APP_GOOGLE_KEY}`)
-                            .then(response => response.json())
-                            .then(result => {
-                                const itemRef = firebase.database().ref(`/${key}`)
+                        else {
+                            fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${artEntry['Address']}&key=${process.env.REACT_APP_GOOGLE_KEY}`)
+                                .then(response => response.json())
+                                .then(result => {
+                                    const itemRef = firebase.database().ref(`/${key}`)
 
-                                const lat = result.results[0].geometry.location.lat
-                                const lng = result.results[0].geometry.location.lng
+                                    const lat = result.results[0].geometry.location.lat
+                                    const lng = result.results[0].geometry.location.lng
 
-                                itemRef.update({
-                                    'lat': lat,
-                                    'lng': lng
+                                    itemRef.update({
+                                        'lat': lat,
+                                        'lng': lng
+                                    })
+
+                                    this.updateStateWithNewArtEntry(itemRef)
+
+                                    count = count + 1
+                                    if (count === total) {
+                                        this.setState({ isLoadedData: true })
+
+                                    }
+
                                 })
 
-                                this.updateStateWithNewArtEntry(itemRef)
+                        }
 
-                                count = count + 1
-                                if (count === total) {
-                                    this.setState({ isLoadedData: true })
-
-                                }
-
-                            })
-
-                    }
-
-                    return true
-                })
+                        return true
+                    })
 
 
 
-            }
+                }
 
+            })
         })
     }
+
 
     handleViewportChange = viewport => {
         this.setState({

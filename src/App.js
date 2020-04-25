@@ -3,6 +3,7 @@ import { ArtProjectMap } from './ArtProjectMap'
 
 function App() {
 
+
   return (
     <ArtProjectMap />
   );
