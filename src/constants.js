@@ -6,6 +6,7 @@ export const OPTION_SKY = "sky"
 export const OPTION_SPRING = "spring"
 export const OPTION_OCEAN = "ocean"
 export const OPTION_EARTH = "earth"
+export const OPTION_LOVE = "love"
 
 export const WEEK_PLANTS = "week 1 - plants"
 export const WEEK_RAINBOWS = "week 2 - rainbows"
@@ -13,10 +14,11 @@ export const WEEK_SKIES = "week 3 - skies"
 export const WEEK_SPRING = "week 4 - spring"
 export const WEEK_OCEAN = "week 5 - ocean"
 export const WEEK_EARTH = "week 6 - earth"
+export const WEEK_LOVE = "week 7 - love"
 
-export const ALL_OPTIONS = [OPTION_RAINBOWS, OPTION_PLANTS, OPTION_SKY, OPTION_SPRING, OPTION_OCEAN, OPTION_EARTH]
+export const ALL_OPTIONS = [OPTION_RAINBOWS, OPTION_PLANTS, OPTION_SKY, OPTION_SPRING, OPTION_OCEAN, OPTION_EARTH, OPTION_LOVE]
 
-export const ALL_WEEKS = [WEEK_PLANTS, WEEK_RAINBOWS, WEEK_SKIES, WEEK_SPRING, WEEK_OCEAN, WEEK_EARTH]
+export const ALL_WEEKS = [WEEK_PLANTS, WEEK_RAINBOWS, WEEK_SKIES, WEEK_SPRING, WEEK_OCEAN, WEEK_EARTH, WEEK_LOVE]
 
 export const TYPE_OF_ART_WINDOW = "window art"
 export const TYPE_OF_ART_SIDEWALK = "sidewalk art"
@@ -60,6 +62,12 @@ export const RECORDS = [
         option: OPTION_EARTH,
         image: Icons.earth,
         alt: "Earth Icon"
+    },
+    {
+        week: WEEK_LOVE,
+        option: OPTION_LOVE,
+        image: Icons.love,
+        alt: "Love Icon"
     },
 
 ]

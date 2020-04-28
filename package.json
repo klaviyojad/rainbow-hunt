@@ -9,7 +9,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "acorn": "^7.1.1",
-    "firebase": "^7.13.1",
+    "firebase": "^7.14.2",
     "focus-trap-react": "^6.0.0",
     "github-pages-deploy-action": "^3.4.2",
     "moment": "^2.24.0",
