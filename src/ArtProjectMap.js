@@ -9,11 +9,6 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import Confirm from "./Confirm"
 
 
-
-
-
-
-
 class ArtProjectMap extends Component {
 
     constructor(props) {
@@ -23,6 +18,7 @@ class ArtProjectMap extends Component {
 
         this.state = {
             isLoadedData: false,
+            introLoad: true,
             artEntries: [],
             viewport: {
                 latitude: 42.3876,
@@ -149,7 +145,7 @@ class ArtProjectMap extends Component {
 
     render() {
 
-        const { selectedArtEntry, active, isModalOpen } = this.state;
+        const { selectedArtEntry, active, isModalOpen, introLoad } = this.state;
 
         const options = [
             ...Constants.ALL_OPTIONS,
@@ -190,6 +186,7 @@ class ArtProjectMap extends Component {
 
                     }
                     getCursor={(e) => "crosshair"}
+
                 >
 
                     {this.state.artEntries.map(artEntry => (
@@ -215,10 +212,18 @@ class ArtProjectMap extends Component {
                             </Marker>)
 
                     ))}
+                    {
+                        introLoad ?
+                            <Popup latitude={42.3876} longitude={-71.0995} closeOnClick={true} onClose={() => this.setState({ introLoad: false })}>
+                                <h1>Welcome to Camberville Art Project</h1>
+                                <p>All Camberville and Greater Boston area folks are invited to create art based on a shared theme each week and display it</p>
+                                <p>Themes will be very general and open-ended so that they remain accessible to all age groups and to allow us to be as creative as we want.</p>
+                                <p>Clicking on the icons of the map will give you coordinates of the art pieces shared by our community</p>
+                                <p>You can use the cross-hair cursor to input your contributions to the map, it will always default to this week's theme</p>
+                            </Popup> : null
+                    }
 
                     {
-
-
 
                         selectedArtEntry ?
                             (<Popup latitude={selectedArtEntry.lat} longitude={selectedArtEntry.lng}
