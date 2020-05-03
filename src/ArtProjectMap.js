@@ -19,6 +19,7 @@ class ArtProjectMap extends Component {
     constructor(props) {
 
         super(props)
+        this.mapRef = React.createRef()
 
         this.state = {
             isLoadedData: false,
@@ -28,7 +29,8 @@ class ArtProjectMap extends Component {
                 longitude: -71.0995,
                 zoom: 12,
                 width: '100vw',
-                height: "100vh"
+                height: "100vh",
+                style: { cursor: "crosshair" }
             },
             selectedArtEntry: null,
             active: Constants.ALL_OPTIONS,
@@ -107,31 +109,7 @@ class ArtProjectMap extends Component {
 
                             }
                         }
-                        else {
-                            fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${artEntry['Address']}&key=${process.env.REACT_APP_GOOGLE_KEY}`)
-                                .then(response => response.json())
-                                .then(result => {
-                                    const itemRef = firebase.database().ref(`/${key}`)
 
-                                    const lat = result.results[0].geometry.location.lat
-                                    const lng = result.results[0].geometry.location.lng
-
-                                    itemRef.update({
-                                        'lat': lat,
-                                        'lng': lng
-                                    })
-
-                                    this.updateStateWithNewArtEntry(itemRef)
-
-                                    count = count + 1
-                                    if (count === total) {
-                                        this.setState({ isLoadedData: true })
-
-                                    }
-
-                                })
-
-                        }
 
                         return true
                     })
@@ -195,7 +173,9 @@ class ArtProjectMap extends Component {
                 <div className="toggle-group absolute top left ml12 mt12 border border--2 border--white bg-white shadow-darken10 z1">
                     {options.map(renderOptions)}
                 </div>
+
                 <ReactMapGL
+                    ref={this.mapRef}
                     {...viewport}
                     mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
                     onViewportChange={this.handleViewportChange}
@@ -207,7 +187,11 @@ class ArtProjectMap extends Component {
                             "isModalOpen": true
                         })
                     }
-                    }>
+
+                    }
+                    getCursor={(e) => "crosshair"}
+                >
+
                     {this.state.artEntries.map(artEntry => (
                         artEntry.lat && artEntry.lng && (
                             <Marker key={`${JSON.stringify(artEntry)}`} latitude={artEntry.lat} longitude={artEntry.lng}>
@@ -240,7 +224,8 @@ class ArtProjectMap extends Component {
                             (<Popup latitude={selectedArtEntry.lat} longitude={selectedArtEntry.lng}
                                 onClose={() => this.setState({ selectedArtEntry: null })}
                                 closeOnClick={false}
-                                captureClick={true}>
+                                captureClick={true}
+                            >
 
                                 <u>{selectedArtEntry.Week}</u>
                                 <p>{selectedArtEntry['Address']}</p>
@@ -259,11 +244,12 @@ class ArtProjectMap extends Component {
 
 
                 </ReactMapGL>
+
                 <ArtEntryModal isModalOpen={isModalOpen} setIsModalOpen={this.setIsModalOpen} addNewArtEntry={this.addNewArtEntry} />
 
 
 
-            </div>
+            </div >
         )
 
     }
