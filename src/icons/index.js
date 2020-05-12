@@ -6,5 +6,6 @@ import ocean from './ocean.svg'
 import earth from './earth.svg'
 import love from './love.svg'
 import thankyou from './thankyou.svg'
+import animals from './animals.svg'
 
-export { rainbow, plant, sky, spring, ocean, earth, love, thankyou }
+export { rainbow, plant, sky, spring, ocean, earth, love, thankyou, animals }
