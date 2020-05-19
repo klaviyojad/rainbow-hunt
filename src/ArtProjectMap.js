@@ -18,7 +18,7 @@ class ArtProjectMap extends Component {
 
         this.state = {
             isLoadedData: false,
-            introLoad: true,
+            //introLoad: true,
             artEntries: [],
             viewport: {
                 latitude: 42.3876,
@@ -145,7 +145,7 @@ class ArtProjectMap extends Component {
 
     render() {
 
-        const { selectedArtEntry, active, isModalOpen, introLoad } = this.state;
+        const { selectedArtEntry, active, isModalOpen, /*introLoad */ } = this.state;
 
         const options = [
             ...Constants.ALL_OPTIONS,
@@ -212,7 +212,7 @@ class ArtProjectMap extends Component {
                             </Marker>)
 
                     ))}
-                    {
+                    {/*                     {
                         introLoad ?
                             <Popup latitude={42.3876} longitude={-71.0995} closeOnClick={true} onClose={() => this.setState({ introLoad: false })}>
                                 <h1>Welcome to Camberville Art Project</h1>
@@ -221,7 +221,7 @@ class ArtProjectMap extends Component {
                                 <p>Clicking on the icons of the map will give you coordinates of the art pieces shared by our community</p>
                                 <p>You can use the cross-hair cursor to input your contributions to the map, it will always default to this week's theme</p>
                             </Popup> : null
-                    }
+                    } */}
 
                     {
 
