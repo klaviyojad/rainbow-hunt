@@ -10,6 +10,8 @@ export const OPTION_LOVE = "love"
 export const OPTION_THANK_YOU = "thank you"
 export const OPTION_ANIMALS = "animals"
 export const OPTION_SHAPES = "shapes"
+export const OPTION_HOME = "home"
+
 
 export const WEEK_PLANTS = "week 1 - plants"
 export const WEEK_RAINBOWS = "week 2 - rainbows"
@@ -21,10 +23,11 @@ export const WEEK_LOVE = "week 7 - love"
 export const WEEK_THANK_YOU = "week 8 - thank you"
 export const WEEK_ANIMALS = "week 9 - animals"
 export const WEEK_SHAPES = "week 10 - shapes"
+export const WEEK_HOME = "week 11 - home"
 
-export const ALL_OPTIONS = [OPTION_RAINBOWS, OPTION_PLANTS, OPTION_SKY, OPTION_SPRING, OPTION_OCEAN, OPTION_EARTH, OPTION_LOVE, OPTION_THANK_YOU, OPTION_ANIMALS, OPTION_SHAPES]
+export const ALL_OPTIONS = [OPTION_RAINBOWS, OPTION_PLANTS, OPTION_SKY, OPTION_SPRING, OPTION_OCEAN, OPTION_EARTH, OPTION_LOVE, OPTION_THANK_YOU, OPTION_ANIMALS, OPTION_SHAPES, OPTION_HOME]
 
-export const ALL_WEEKS = [WEEK_PLANTS, WEEK_RAINBOWS, WEEK_SKIES, WEEK_SPRING, WEEK_OCEAN, WEEK_EARTH, WEEK_LOVE, WEEK_THANK_YOU, WEEK_ANIMALS, WEEK_SHAPES]
+export const ALL_WEEKS = [WEEK_PLANTS, WEEK_RAINBOWS, WEEK_SKIES, WEEK_SPRING, WEEK_OCEAN, WEEK_EARTH, WEEK_LOVE, WEEK_THANK_YOU, WEEK_ANIMALS, WEEK_SHAPES, WEEK_HOME]
 
 export const TYPE_OF_ART_WINDOW = "window art"
 export const TYPE_OF_ART_SIDEWALK = "sidewalk art"
@@ -92,6 +95,12 @@ export const RECORDS = [
         option: OPTION_SHAPES,
         image: Icons.shapes,
         alt: "Shapes Icon"
+    },
+    {
+        week: WEEK_HOME,
+        option: OPTION_HOME,
+        image: Icons.home,
+        alt: "Home Icon"
     },
 
 ]
